@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>나의 시작 페이지</title>
+
+  <!-- 글꼴: 구글 화면에서 쓰는 느낌에 가까운 Roboto + Noto Sans KR -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+
+  <style>
+    /* ===== 색상: 구글 머티리얼 디자인 계열 ===== */
+    :root {
+      --bg:        #FFFFFF;  /* 바탕: 흰색 */
+      --surface:   #F0F4F9;  /* 카드: 아주 연한 푸른 회색 */
+      --text:      #1F1F1F;  /* 본문 글자 */
+      --subtext:   #5F6368;  /* 보조 글자 */
+      --primary:   #0B57D0;  /* 강조: 구글 블루 */
+      --outline:   #DADCE0;  /* 테두리 */
+      --hover:     #E3E9F1;  /* 마우스 올렸을 때 */
+      --shadow:    0 1px 6px rgba(32, 33, 36, 0.28);  /* 구글 검색창 그림자 */
+      /* 분류 색: 수업=파랑, 연구=초록, 기타=회색 */
+      --class-fg: #0B57D0;    --class-bg: #D3E3FD;
+      --research-fg: #146C2E; --research-bg: #C4EED0;
+      --etc-fg: #444746;      --etc-bg: #E3E3E3;
+    }
+
+    /* 컴퓨터가 다크 모드면 자동으로 어두운 색으로 */
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --bg:      #202124;
+        --surface: #303134;
+        --text:    #E8EAED;
+        --subtext: #9AA0A6;
+        --primary: #8AB4F8;
+        --outline: #5F6368;
+        --hover:   #3C4043;
+        --shadow:  0 1px 6px rgba(0, 0, 0, 0.5);
+        --class-fg: #D3E3FD;    --class-bg: #0842A0;
+        --research-fg: #C4EED0; --research-bg: #0F5223;
+        --etc-fg: #E3E3E3;      --etc-bg: #444746;
+      }
+    }
+    :root[data-theme="dark"] {
+        --bg:      #202124;
+        --surface: #303134;
+        --text:    #E8EAED;
+        --subtext: #9AA0A6;
+        --primary: #8AB4F8;
+        --outline: #5F6368;
+        --hover:   #3C4043;
+        --shadow:  0 1px 6px rgba(0, 0, 0, 0.5);
+        --class-fg: #D3E3FD;    --class-bg: #0842A0;
+        --research-fg: #C4EED0; --research-bg: #0F5223;
+        --etc-fg: #E3E3E3;      --etc-bg: #444746;
+    }
+    :root { padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+    html { scroll-padding-top: env(safe-area-inset-top, 0px); background: var(--bg); }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Roboto", "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+      display: flex;
+      justify-content: center;
+      padding: 10vh 20px 40px;
+    }
+
+    main { width: 100%; max-width: 760px; }
+
+    /* ----- 윗부분: 가운데 정렬한 시계 영역 ----- */
+    .top { text-align: center; }
+    #greeting { font-size: 1.1rem; color: var(--subtext); margin: 0; }
+    #clock {
+      font-size: clamp(4rem, 13vw, 6.5rem);
+      font-weight: 300;
+      line-height: 1.1;
+      margin: 4px 0;
+      font-variant-numeric: tabular-nums;
+    }
+    #date { font-size: 1rem; color: var(--subtext); margin: 0 0 32px; }
+
+    /* ----- 구글식 둥근 검색창 ----- */
+    .search {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      max-width: 584px;
+      height: 48px;
+      margin: 0 auto 40px;
+      padding: 0 20px;
+      border: 1px solid var(--outline);
+      border-radius: 24px;          /* 높이의 절반 → 알약 모양 */
+      background: var(--bg);
+      transition: box-shadow 0.2s;
+    }
+    .search:hover,
+    .search:focus-within { box-shadow: var(--shadow); border-color: transparent; }
+    .search svg { flex: none; fill: var(--subtext); }
+    .search input {
+      flex: 1;
+      border: none;
+      outline: none;
+      background: transparent;
+      color: var(--text);
+      font: inherit;
+      font-size: 1rem;
+    }
+
+    /* ----- 아랫부분: 날씨 카드 + 뉴스 카드 ----- */
+    .boxes {
+      display: grid;
+      grid-template-columns: 1fr 1.6fr;
+      gap: 16px;
+      align-items: start;
+    }
+    section {
+      background: var(--surface);
+      border-radius: 24px;          /* 머티리얼 디자인의 큰 둥근 모서리 */
+      padding: 20px 24px;
+    }
+    section h2 { font-size: 0.95rem; font-weight: 500; margin: 0 0 12px; color: var(--subtext); }
+    .placeholder { color: var(--subtext); margin: 0; line-height: 1.6; }
+
+    /* 날씨 */
+    .now { display: flex; align-items: center; gap: 12px; }
+    .temp { font-size: 3.2rem; font-weight: 300; line-height: 1; }
+    .sky  { font-size: 1.05rem; }
+    .details { margin: 14px 0 0; padding: 0; list-style: none;
+               color: var(--subtext); line-height: 1.9; font-size: 0.9rem; }
+    .updated { margin: 8px 0 0; font-size: 0.75rem; color: var(--subtext); }
+
+    /* 뉴스 */
+    .section-head { display: flex; justify-content: space-between; align-items: baseline; }
+    .more {
+      font-size: 0.85rem; font-weight: 500; color: var(--primary);
+      text-decoration: none; padding: 4px 10px; border-radius: 16px;
+    }
+    .more:hover, .more:focus-visible { background: var(--hover); }
+    .news-list { list-style: none; margin: 0 -12px; padding: 0; }
+    .news-list li { border-radius: 12px; }
+    .news-list li:hover { background: var(--hover); }
+    .news-list a {
+      display: block; padding: 10px 12px 2px;
+      color: var(--text); text-decoration: none; line-height: 1.5;
+    }
+    .news-list a:focus-visible { outline: 2px solid var(--primary); border-radius: 12px; }
+    .meta { display: block; padding: 0 12px 10px; font-size: 0.78rem; color: var(--subtext); }
+
+    /* 할 일 */
+    .col { display: flex; flex-direction: column; gap: 16px; }
+    .todo-count { font-size: 0.8rem; color: var(--subtext); }
+    #todo-input {
+      width: 100%; height: 40px; padding: 0 16px;
+      border: 1px solid var(--outline); border-radius: 20px;
+      background: var(--bg); color: var(--text);
+      font: inherit; font-size: 0.9rem; outline: none;
+    }
+    #todo-input:focus { border-color: var(--primary); }
+    #todo-form { display: flex; flex-direction: column; gap: 8px; }
+    .input-row { display: flex; gap: 8px; }
+
+    /* 분류 칩: 실제 라디오 버튼은 숨기고 옆의 글자를 칩처럼 꾸밈 */
+    .cat-group { display: flex; gap: 6px; }
+    .chip input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+    .chip span {
+      display: inline-block; padding: 4px 14px; border-radius: 16px;
+      border: 1px solid var(--outline); color: var(--subtext);
+      font-size: 0.82rem; cursor: pointer; user-select: none;
+    }
+    .chip span:hover { background: var(--hover); }
+    .chip input:checked + span {           /* 선택된 칩은 분류 색으로 채움 */
+      border-color: transparent; font-weight: 500;
+      background: var(--tag-bg); color: var(--tag-fg);
+    }
+    .chip input:focus-visible + span { outline: 2px solid var(--primary); outline-offset: 2px; }
+
+    /* 분류별 색 (칩과 목록의 태그가 같은 색을 씀) */
+    [data-cat="수업"] { --tag-fg: var(--class-fg);    --tag-bg: var(--class-bg); }
+    [data-cat="연구"] { --tag-fg: var(--research-fg); --tag-bg: var(--research-bg); }
+    [data-cat="기타"] { --tag-fg: var(--etc-fg);      --tag-bg: var(--etc-bg); }
+
+    /* 목록 안의 작은 분류 태그 */
+    .tag {
+      flex: none; padding: 1px 8px; border-radius: 10px;
+      font-size: 0.72rem; font-weight: 500;
+      background: var(--tag-bg); color: var(--tag-fg);
+    }
+    .todo-list li.done .tag { opacity: 0.5; }
+    #todo-input { flex: 1; min-width: 0; }
+    .add-btn {
+      flex: none; display: inline-flex; align-items: center; gap: 4px;
+      height: 40px; padding: 0 16px 0 12px; border: none; border-radius: 20px;
+      background: var(--primary); color: var(--bg);
+      font: inherit; font-size: 0.88rem; font-weight: 500; cursor: pointer;
+    }
+    .add-btn svg { fill: currentColor; }
+    .add-btn:hover { box-shadow: var(--shadow); }
+    .add-btn:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+    .todo-list { list-style: none; margin: 8px -8px 0; padding: 0; }
+    .todo-list li {
+      display: flex; align-items: center; gap: 4px;
+      padding: 2px 4px 2px 8px; border-radius: 12px;
+    }
+    .todo-list li:hover { background: var(--hover); }
+    .todo-list label {
+      flex: 1; display: flex; align-items: center; gap: 10px;
+      padding: 6px 0; cursor: pointer; line-height: 1.4; font-size: 0.92rem;
+    }
+    .todo-list input[type="checkbox"] {
+      width: 18px; height: 18px; margin: 0; flex: none;
+      accent-color: var(--primary);   /* 체크박스 색을 강조색으로 */
+    }
+    .todo-list li.done span { text-decoration: line-through; color: var(--subtext); }
+    .delete {
+      flex: none; width: 28px; height: 28px; border: none; border-radius: 50%;
+      background: transparent; color: var(--subtext); cursor: pointer; font-size: 0.8rem;
+    }
+    .delete:hover, .delete:focus-visible { background: var(--outline); color: var(--text); }
+    /* 마우스가 있는 기기에서는 삭제 버튼을 평소엔 숨겼다가 올리면 보이게 */
+    @media (hover: hover) {
+      .delete { opacity: 0; }
+      .todo-list li:hover .delete, .delete:focus-visible { opacity: 1; }
+    }
+    .empty { margin-top: 10px; font-size: 0.85rem; }
+
+    /* 할 일 아이콘 (구글 시작 화면의 바로가기 타일 모양) */
+    .todo-area { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
+    .todo-launcher {
+      display: inline-flex; flex-direction: column; align-items: center; gap: 8px;
+      padding: 12px 14px; border: none; border-radius: 16px;
+      background: transparent; color: var(--text);
+      font: inherit; font-size: 0.82rem; cursor: pointer;
+    }
+    .todo-launcher:hover { background: var(--hover); }
+    .todo-launcher:focus-visible { outline: 2px solid var(--primary); }
+    .launcher-icon {
+      position: relative; width: 48px; height: 48px; border-radius: 50%;
+      background: var(--surface); display: grid; place-items: center;
+      transition: background 0.2s;
+    }
+    .launcher-icon svg { fill: var(--primary); transition: fill 0.2s; }
+    /* 열려 있을 때는 아이콘 색을 반전해서 '켜짐' 상태를 보여 줌 */
+    .todo-launcher[aria-expanded="true"] .launcher-icon { background: var(--primary); }
+    .todo-launcher[aria-expanded="true"] .launcher-icon svg { fill: var(--bg); }
+    /* 남은 할 일 개수 배지 */
+    .badge {
+      position: absolute; top: -4px; right: -6px;
+      min-width: 20px; height: 20px; padding: 0 5px; border-radius: 10px;
+      background: var(--primary); color: var(--bg); border: 2px solid var(--bg);
+      font-size: 0.7rem; font-weight: 500; display: grid; place-items: center;
+    }
+    .badge[hidden] { display: none; }
+    #todo { width: 100%; }
+    .title-group { display: flex; align-items: baseline; gap: 8px; }
+    .todo-date { font-size: 0.85rem; font-weight: 500; color: var(--primary); white-space: nowrap; }
+
+    @media (max-width: 640px) {
+      .boxes { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="top">
+      <p id="greeting">안녕하세요</p>
+      <h1 id="clock">00:00</h1>
+      <p id="date">날짜</p>
+    </div>
+
+    <!-- 검색창: 입력 후 엔터를 누르면 구글 검색 결과가 열립니다 -->
+    <form class="search" action="https://www.google.com/search" method="get" role="search">
+      <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+      </svg>
+      <input type="text" name="q" placeholder="검색어를 입력하세요" aria-label="구글 검색" autocomplete="off">
+    </form>
+
+    <div class="boxes">
+      <section id="weather">
+        <h2>서울 광진구 날씨</h2>
+        <div id="weather-body">
+          <p class="placeholder">날씨를 불러오는 중…</p>
+        </div>
+      </section>
+
+      <!-- 오른쪽 열: 뉴스 + 그 아래 할 일 아이콘 -->
+      <div class="col">
+      <section id="news">
+        <div class="section-head">
+          <h2>AI 교육 뉴스</h2>
+          <a class="more" target="_blank" rel="noopener"
+             href="https://news.google.com/search?q=AI%EA%B5%90%EC%9C%A1&hl=ko&gl=KR&ceid=KR:ko">더 보기</a>
+        </div>
+        <div id="news-body">
+          <p class="placeholder">뉴스를 불러오는 중…</p>
+        </div>
+      </section>
+
+      <!-- 할 일 아이콘: 누르면 아래 패널이 열리고 닫힘 -->
+      <div class="todo-area">
+        <button id="todo-toggle" class="todo-launcher" type="button"
+                aria-expanded="false" aria-controls="todo">
+          <span class="launcher-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M22 7h-9v2h9V7zm0 8h-9v2h9v-2zM5.54 11 2 7.46l1.41-1.41 2.12 2.12 4.24-4.24 1.41 1.41L5.54 11zm0 8L2 15.46l1.41-1.41 2.12 2.12 4.24-4.24 1.41 1.41L5.54 19z"/>
+            </svg>
+            <span id="todo-badge" class="badge" hidden></span>
+          </span>
+          <span class="launcher-label">오늘의 할 일</span>
+        </button>
+
+        <section id="todo" hidden>
+          <div class="section-head">
+            <div class="title-group">
+              <h2>오늘의 할 일</h2>
+              <span id="todo-count" class="todo-count"></span>
+            </div>
+            <span id="todo-date" class="todo-date"></span>
+          </div>
+          <form id="todo-form">
+            <!-- 분류 선택: 라디오 버튼(하나만 고를 수 있음)을 칩 모양으로 꾸밈 -->
+            <div class="cat-group" role="radiogroup" aria-label="분류">
+              <label class="chip"><input type="radio" name="category" value="수업" checked><span data-cat="수업">수업</span></label>
+              <label class="chip"><input type="radio" name="category" value="연구"><span data-cat="연구">연구</span></label>
+              <label class="chip"><input type="radio" name="category" value="기타"><span data-cat="기타">기타</span></label>
+            </div>
+            <div class="input-row">
+            <input id="todo-input" type="text" placeholder="새 할 일을 입력하세요"
+                   aria-label="새 할 일" autocomplete="off" maxlength="80">
+            <button type="submit" class="add-btn">
+              <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+              </svg>
+              추가
+            </button>
+            </div>
+          </form>
+          <ul id="todo-list" class="todo-list"></ul>
+          <p id="todo-empty" class="placeholder empty">오늘 할 일을 적어 보세요.</p>
+        </section>
+      </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // 시계·날짜·인사말을 지금 시각에 맞게 바꿔 주는 함수
+    function updateTime() {
+      const now = new Date();                 // 컴퓨터의 현재 시각
+
+      // 1) 시계: 시와 분을 두 자리로 맞춤 (9 → 09)
+      const h = String(now.getHours()).padStart(2, "0");
+      const m = String(now.getMinutes()).padStart(2, "0");
+      document.getElementById("clock").textContent = h + ":" + m;
+
+      // 2) 날짜: 한국식 표기 (예: 2026년 10월 6일 화요일)
+      document.getElementById("date").textContent =
+        now.toLocaleDateString("ko-KR", {
+          year: "numeric", month: "long", day: "numeric", weekday: "long"
+        });
+
+      // 2-1) 할 일 패널의 날짜·요일 (예: 10월 6일 화요일)
+      document.getElementById("todo-date").textContent =
+        now.toLocaleDateString("ko-KR", { month: "long", day: "numeric", weekday: "long" });
+
+      // 3) 인사말: 시간대에 따라 다르게
+      const hour = now.getHours();
+      let greeting;
+      if (hour < 6)       greeting = "늦은 밤이에요";
+      else if (hour < 12) greeting = "좋은 아침이에요";
+      else if (hour < 18) greeting = "좋은 오후예요";
+      else                greeting = "편안한 저녁 보내세요";
+      document.getElementById("greeting").textContent = greeting;
+    }
+
+    updateTime();                    // 페이지를 열자마자 한 번 실행
+    setInterval(updateTime, 1000);   // 그 뒤로 1초(1000ms)마다 다시 실행
+
+
+    // ================= 2단계: 날씨 =================
+
+    // 광진구의 위도·경도 (지역을 바꾸려면 이 두 숫자만 바꾸면 됩니다)
+    const LAT = 37.5384;
+    const LON = 127.0822;
+
+    // Open-Meteo에 보낼 요청 주소 = "어디의, 어떤 정보를 달라"는 주문서
+    const WEATHER_URL =
+      "https://api.open-meteo.com/v1/forecast" +
+      "?latitude=" + LAT + "&longitude=" + LON +
+      "&current=temperature_2m,apparent_temperature,relative_humidity_2m,weather_code,wind_speed_10m" +
+      "&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max" +
+      "&timezone=Asia/Seoul&forecast_days=1";
+
+    // 날씨 서비스는 하늘 상태를 숫자 코드로 줍니다 → 한글로 바꾸는 표
+    function describeSky(code) {
+      if (code === 0)  return "☀️ 맑음";
+      if (code <= 2)   return "🌤️ 구름 조금";
+      if (code === 3)  return "☁️ 흐림";
+      if (code <= 48)  return "🌫️ 안개";
+      if (code <= 57)  return "🌦️ 이슬비";
+      if (code <= 67)  return "🌧️ 비";
+      if (code <= 77)  return "🌨️ 눈";
+      if (code <= 82)  return "🌧️ 소나기";
+      if (code <= 86)  return "🌨️ 소낙눈";
+      return "⛈️ 뇌우";
+    }
+
+    // async/await: "답이 올 때까지 기다렸다가 다음 줄 실행"이라는 뜻
+    async function loadWeather() {
+      const box = document.getElementById("weather-body");
+      try {
+        const response = await fetch(WEATHER_URL);   // ① 요청 보내기
+        if (!response.ok) throw new Error("응답 코드 " + response.status);
+        const data = await response.json();           // ② 받은 글을 데이터로 변환
+
+        const now = data.current;                     // ③ 필요한 값 꺼내기
+        const today = data.daily;
+
+        box.innerHTML = `
+          <div class="now">
+            <span class="temp">${Math.round(now.temperature_2m)}°</span>
+            <span class="sky">${describeSky(now.weather_code)}</span>
+          </div>
+          <ul class="details">
+            <li>체감 ${Math.round(now.apparent_temperature)}° · 습도 ${now.relative_humidity_2m}%</li>
+            <li>최고 ${Math.round(today.temperature_2m_max[0])}° / 최저 ${Math.round(today.temperature_2m_min[0])}°</li>
+            <li>강수 확률 ${today.precipitation_probability_max[0]}%</li>
+            <li>바람 ${Math.round(now.wind_speed_10m / 3.6)} m/s</li>
+          </ul>
+          <p class="updated">${new Date().toLocaleTimeString("ko-KR", { hour: "2-digit", minute: "2-digit" })} 기준</p>
+        `;                                             // ④ 화면에 채워 넣기
+      } catch (error) {
+        // 인터넷이 끊겼거나 서비스에 문제가 있을 때
+        box.innerHTML = `<p class="placeholder">날씨를 불러오지 못했어요. 인터넷 연결을 확인한 뒤 새로고침해 주세요.</p>`;
+        console.error(error);
+      }
+    }
+
+    // 게시된 페이지에서는 외부 서버 요청이 막혀 있어 실시간 날씨 대신 바로가기를 보여 줍니다
+    document.getElementById("weather-body").innerHTML =
+      `<p class="placeholder">이 페이지에서는 실시간 날씨를 불러올 수 없어요.</p>
+       <p style="margin:10px 0 0"><a class="more" style="margin-left:-10px" target="_blank" rel="noopener"
+         href="https://www.google.com/search?q=%EA%B4%91%EC%A7%84%EA%B5%AC+%EB%82%A0%EC%94%A8">광진구 날씨 보기</a></p>`;
+
+
+    // ================= 3단계: 뉴스 =================
+
+    const NEWS_KEYWORD = "AI교육";   // 검색어를 바꾸면 다른 주제의 뉴스가 나옵니다
+    const NEWS_COUNT = 6;            // 화면에 보여 줄 기사 수
+
+    // 구글 뉴스의 검색 결과 RSS 주소 (encodeURIComponent: 한글을 주소용 문자로 변환)
+    const RSS_URL = "https://news.google.com/rss/search?q=" +
+      encodeURIComponent(NEWS_KEYWORD) + "&hl=ko&gl=KR&ceid=KR:ko";
+
+    // 구글 뉴스는 다른 웹페이지가 직접 가져가는 것을 막아 두었기 때문에(CORS)
+    // 중간에서 대신 받아다 주는 '중계 서비스'를 거칩니다.
+
+    // 방법 1: rss2json — RSS를 JSON으로 바꿔서 전달
+    async function fetchViaRss2json() {
+      const url = "https://api.rss2json.com/v1/api.json?rss_url=" + encodeURIComponent(RSS_URL);
+      const response = await fetch(url);
+      const data = await response.json();
+      if (data.status !== "ok") throw new Error("rss2json: " + data.message);
+      return data.items.map(item => ({
+        title: item.title,
+        link:  item.link,
+        date:  new Date(item.pubDate.replace(" ", "T") + "Z")
+      }));
+    }
+
+    // 방법 2: allorigins — RSS 원본(XML)을 그대로 전달, 우리가 직접 해석
+    async function fetchViaAllOrigins() {
+      const url = "https://api.allorigins.win/raw?url=" + encodeURIComponent(RSS_URL);
+      const response = await fetch(url);
+      if (!response.ok) throw new Error("allorigins: 응답 코드 " + response.status);
+      const xml = new DOMParser().parseFromString(await response.text(), "text/xml");
+      return [...xml.querySelectorAll("item")].map(item => ({
+        title: item.querySelector("title")?.textContent ?? "",
+        link:  item.querySelector("link")?.textContent ?? "#",
+        date:  new Date(item.querySelector("pubDate")?.textContent)
+      }));
+    }
+
+    // "3시간 전"처럼 보여 주기
+    function timeAgo(date) {
+      const minutes = Math.floor((Date.now() - date) / 60000);
+      if (isNaN(minutes)) return "";
+      if (minutes < 60) return Math.max(minutes, 1) + "분 전";
+      const hours = Math.floor(minutes / 60);
+      if (hours < 24) return hours + "시간 전";
+      return Math.floor(hours / 24) + "일 전";
+    }
+
+    async function loadNews() {
+      const box = document.getElementById("news-body");
+      let items;
+
+      // 방법 1을 먼저 시도하고, 실패하면 방법 2로
+      try {
+        items = await fetchViaRss2json();
+      } catch (firstError) {
+        console.warn(firstError);
+        try {
+          items = await fetchViaAllOrigins();
+        } catch (secondError) {
+          console.error(secondError);
+          box.innerHTML = `<p class="placeholder">뉴스를 불러오지 못했어요. 오른쪽 위 '더 보기'로 구글 뉴스에서 확인할 수 있어요.</p>`;
+          return;
+        }
+      }
+
+      items.sort((a, b) => b.date - a.date);   // 최신 기사가 위로
+
+      const list = document.createElement("ul");
+      list.className = "news-list";
+
+      for (const item of items.slice(0, NEWS_COUNT)) {
+        // 구글 뉴스 제목은 "기사 제목 - 언론사" 형태 → 둘로 나누기
+        const cut = item.title.lastIndexOf(" - ");
+        const headline = cut > 0 ? item.title.slice(0, cut) : item.title;
+        const source   = cut > 0 ? item.title.slice(cut + 3) : "";
+
+        const li = document.createElement("li");
+        const a = document.createElement("a");
+        a.href = item.link;
+        a.target = "_blank";          // 새 탭에서 열기
+        a.rel = "noopener";
+        a.textContent = headline;     // textContent: 외부 글을 '글자'로만 넣어 안전하게
+
+        const meta = document.createElement("span");
+        meta.className = "meta";
+        meta.textContent = [source, timeAgo(item.date)].filter(Boolean).join(", ");
+
+        li.append(a, meta);
+        list.append(li);
+      }
+
+      box.replaceChildren(list);   // "불러오는 중…"을 목록으로 교체
+    }
+
+    // 게시된 페이지에서는 외부 서버 요청이 막혀 있어 뉴스 목록 대신 안내를 보여 줍니다
+    document.getElementById("news-body").innerHTML =
+      `<p class="placeholder">이 페이지에서는 뉴스 목록을 불러올 수 없어요. 오른쪽 위 '더 보기'로 구글 뉴스에서 AI 교육 소식을 확인하세요.</p>`;
+
+
+    // ================= 추가: 오늘의 할 일 =================
+
+    // localStorage: 브라우저 안의 작은 저장 공간. 창을 닫았다 열어도 남아 있어요.
+    // 저장 이름을 바꾸면(v2) 기존 목록 대신 아래 기본 항목으로 새로 시작해요
+    const TODO_KEY = "startpage-todos-v2";
+    const todayKey = () => new Date().toLocaleDateString("sv-SE");  // "2026-10-06" 형식
+
+    // 기본 할 일: 진행 중인 수업·연구 (자유롭게 고치거나 줄을 추가·삭제하세요)
+    const DEFAULT_TODOS = [
+      { category: "수업", text: "건강검진 데이터 맷플롯립 활동지·실습 코드 점검" },
+      { category: "수업", text: "'다양한 방법으로 분석하기' 막힐 때 줄 질문 5개 정리" },
+      { category: "수업", text: "중간고사 앱 UI 과제 안내문 확정 (자동화 트랙 포함)" },
+      { category: "수업", text: "목요일 대학원 데이터분석·생성형AI 수업 준비" },
+      { category: "수업", text: "석사 연구방법론 연구계획서 발표 피드백 정리" },
+      { category: "연구", text: "컴퓨팅사고력→생성형AI 활용 논문 선행연구 정리 (H1~H3 근거)" },
+      { category: "연구", text: "빅데이터분석과활용 AI 신뢰 보정 사전검사(9주차) 문항 준비" }
+    ];
+
+    // 예전 형식("[수업] 할 일")으로 저장된 항목을 새 형식으로 바꿔 줌
+    function withCategory(todo) {
+      if (todo.category) return todo;
+      const match = todo.text.match(/^\[(수업|연구|기타)\]\s*/);
+      return match
+        ? { ...todo, category: match[1], text: todo.text.slice(match[0].length) }
+        : { ...todo, category: "기타" };
+    }
+
+    // 저장된 목록 불러오기
+    function loadTodos() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(TODO_KEY));
+        // 처음 열었을 때(저장된 게 없을 때)는 기본 항목으로 채움
+        if (!saved) return DEFAULT_TODOS.map(todo => ({ ...todo, done: false }));
+        let items = saved.items.map(withCategory);
+        // 날짜가 바뀌었으면: 끝낸 일은 지우고, 못 끝낸 일은 오늘로 넘겨요
+        if (saved.date !== todayKey()) items = items.filter(todo => !todo.done);
+        return items;
+      } catch (error) {
+        return [];
+      }
+    }
+
+    // 현재 목록 저장하기 (JSON.stringify: 데이터를 글자로 바꿔 저장)
+    function saveTodos() {
+      try {
+        localStorage.setItem(TODO_KEY, JSON.stringify({ date: todayKey(), items: todos }));
+      } catch (error) {
+        console.warn("할 일을 저장하지 못했어요", error);
+      }
+    }
+
+    let todos = loadTodos();   // 예: [{ text: "강의 자료 준비", done: false }, ...]
+
+    // 목록 데이터를 화면에 그리기
+    function renderTodos() {
+      const list = document.getElementById("todo-list");
+      list.replaceChildren();   // 기존 목록을 비우고 처음부터 다시 그림
+
+      todos.forEach((todo, index) => {
+        const li = document.createElement("li");
+        if (todo.done) li.className = "done";
+
+        const label = document.createElement("label");
+        const check = document.createElement("input");
+        check.type = "checkbox";
+        check.checked = todo.done;
+        check.addEventListener("change", () => {        // 체크하면
+          todo.done = check.checked;
+          saveTodos();
+          renderTodos();
+        });
+
+        const text = document.createElement("span");
+        text.textContent = todo.text;
+        const tag = document.createElement("span");
+        tag.className = "tag";
+        tag.dataset.cat = todo.category;   // data-cat="수업" → CSS가 분류 색을 입힘
+        tag.textContent = todo.category;
+
+        label.append(check, tag, text);
+
+        const del = document.createElement("button");
+        del.type = "button";
+        del.className = "delete";
+        del.textContent = "✕";
+        del.setAttribute("aria-label", todo.text + " 삭제");
+        del.addEventListener("click", () => {            // ✕를 누르면
+          todos.splice(index, 1);                         // 배열에서 그 항목 제거
+          saveTodos();
+          renderTodos();
+        });
+
+        li.append(label, del);
+        list.append(li);
+      });
+
+      // 남은 개수 표시
+      const left = todos.filter(todo => !todo.done).length;
+      document.getElementById("todo-count").textContent =
+        todos.length === 0 ? "" : (left === 0 ? "모두 끝냈어요" : left + "개 남음");
+      document.getElementById("todo-empty").hidden = todos.length > 0;
+
+      // 아이콘 위 배지: 남은 일이 있을 때만 숫자 표시
+      const badge = document.getElementById("todo-badge");
+      badge.textContent = left;
+      badge.hidden = left === 0;
+    }
+
+    // 아이콘을 누르면 할 일 패널 열기/닫기
+    const toggleButton = document.getElementById("todo-toggle");
+    const todoPanel = document.getElementById("todo");
+
+    toggleButton.addEventListener("click", () => {
+      const willOpen = todoPanel.hidden;          // 지금 숨겨져 있으면 → 열 차례
+      todoPanel.hidden = !willOpen;
+      toggleButton.setAttribute("aria-expanded", willOpen);
+      if (willOpen) document.getElementById("todo-input").focus();  // 열면 바로 입력 가능하게
+    });
+
+    // Esc 키로 닫기
+    todoPanel.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        todoPanel.hidden = true;
+        toggleButton.setAttribute("aria-expanded", false);
+        toggleButton.focus();
+      }
+    });
+
+    // 입력창에서 Enter → 새 할 일 추가
+    document.getElementById("todo-form").addEventListener("submit", (event) => {
+      event.preventDefault();   // 폼의 기본 동작(페이지 새로고침)을 막음
+      const input = document.getElementById("todo-input");
+      const text = input.value.trim();
+      if (!text) return;        // 빈칸이면 무시
+      // 선택된(checked) 분류 칩의 값 읽기
+      const category = document.querySelector('input[name="category"]:checked').value;
+      todos.push({ category: category, text: text, done: false });
+      input.value = "";
+      saveTodos();
+      renderTodos();
+    });
+
+    saveTodos();     // 날짜가 바뀌어 정리된 목록을 바로 저장
+    renderTodos();   // 처음 화면 그리기
+  </script>
+</body>
+</html>
